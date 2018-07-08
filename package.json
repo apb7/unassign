@@ -1,0 +1,39 @@
+{
+  "name": "unassign",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Apurv-Bajaj <apurvabajaj007@gmail.com> (https://github.com/apb7/unassign)",
+  "license": "ISC",
+  "repository": "https://github.com/apb7/unassign.git",
+  "homepage": "https://github.com/apb7/unassign",
+  "bugs": "https://github.com/apb7/unassign/issues",
+  "keywords": [
+    "probot",
+    "github",
+    "probot-app"
+  ],
+  "scripts": {
+    "dev": "nodemon --exec \"npm start\"",
+    "start": "probot run ./index.js",
+    "lint": "standard --fix",
+    "test": "jest && standard",
+    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+  },
+  "dependencies": {
+    "probot": "^7.0.0"
+  },
+  "devDependencies": {
+    "jest": "^22.4.3",
+    "nodemon": "^1.17.2",
+    "smee-client": "^1.0.2",
+    "standard": "^10.0.3"
+  },
+  "engines": {
+    "node": ">= 8.3.0"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  }
+}
