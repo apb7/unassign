@@ -1,3 +1,4 @@
+const createScheduler = require('probot-scheduler')
 const Unassign = require('./lib/unassign')
 
 module.exports = async robot => {
