@@ -1,15 +1,44 @@
-/**
- * This is the entry point for your Probot App.
- * @param {import('probot').Application} app - Probot's Application class.
- */
-module.exports = app => {
-  // Your code here
-  app.log('Yay, the app was loaded!')
+const Unassign = require('./lib/unassign')
 
+module.exports = async robot => {
+  // Visit all repositories to mark and sweep no-response issues
+  const scheduler = createScheduler(robot)
 
-  // For more information on building apps:
-  // https://probot.github.io/docs/
+  // Unmark no response issues if a user comments
+  const events = [
+    'issue_comment',
+    'issues',
+  ]
 
-  // To get your app running against GitHub, see:
-  // https://probot.github.io/docs/development/
+  robot.on(events, unmark)
+  robot.on('schedule.repository', markAndSweep)
+
+  async function unmark (context) {
+    if (!context.isBot) {
+      const unassign = Unassign(context.github)
+      let issue = context.payload.issue || context.payload.pull_request
+      const type = context.payload.issue ? 'issues' : 'pulls'
+
+      // Some payloads don't include labels
+      if (!issue.labels) {
+        try {
+          issue = (await context.github.issues.get(context.issue())).data
+        } catch (error) {
+          context.log('Issue not found')
+        }
+      }
+
+      const noResponseLabelAdded = context.payload.action === 'labeled' &&
+        context.payload.label.name === 'issue assignee: no-response'
+
+      if (unassign.hasNoResponseLabel(type, issue) && issue.state !== 'closed' && !NoResponseLabelAdded) {
+        unassign.unmark(type, issue)
+      }
+    }
+  }
+
+  async function markAndSweep (context) {
+    const unassign = Unassign(context.github)
+    await unassign.markAndSweep('issues')
+  }
 }
