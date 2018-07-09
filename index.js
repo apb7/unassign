@@ -3,7 +3,10 @@ const Unassign = require('./lib/unassign')
 
 module.exports = async robot => {
   // Visit all repositories to mark and sweep no-response issues
-  const scheduler = createScheduler(robot)
+  const scheduler = createScheduler(robot, {
+    delay: !process.env.DISABLE_DELAY,
+    interval: 60 * 5 * 1000
+  });
 
   // Unmark no response issues if a user comments
   const events = [
@@ -16,7 +19,8 @@ module.exports = async robot => {
 
   async function unmark (context) {
     if (!context.isBot) {
-      const unassign = Unassign(context.github)
+      const assignees = await context.github.issues.getAssignees(context.repo)
+      const unassign = new Unassign(context.github, context.repo({assignees: assignees.data, logger: robot.log}))
       let issue = context.payload.issue || context.payload.pull_request
       const type = context.payload.issue ? 'issues' : 'pulls'
 
@@ -39,7 +43,8 @@ module.exports = async robot => {
   }
 
   async function markAndSweep (context) {
-    const unassign = Unassign(context.github)
+    const assignees = await context.github.issues.getAssignees(context.repo())
+    const unassign = new Unassign(context.github, context.repo({assignees: assignees.data, logger: robot.log}))
     await unassign.markAndSweep('issues')
   }
 }
