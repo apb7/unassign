@@ -19,8 +19,7 @@ module.exports = async robot => {
 
   async function unmark (context) {
     if (!context.isBot) {
-      const assignees = await context.github.issues.getAssignees(context.repo)
-      const unassign = new Unassign(context.github, context.repo({assignees: assignees.data, logger: robot.log}))
+      const unassign = new Unassign(context.github, context.repo({logger: robot.log}))
       let issue = context.payload.issue || context.payload.pull_request
       const type = context.payload.issue ? 'issues' : 'pulls'
 
@@ -36,15 +35,14 @@ module.exports = async robot => {
       const noResponseLabelAdded = context.payload.action === 'labeled' &&
         context.payload.label.name === 'issue assignee: no-response'
 
-      if (unassign.hasNoResponseLabel(type, issue) && issue.state !== 'closed' && !NoResponseLabelAdded) {
+      if (unassign.hasNoResponseLabel(type, issue) && issue.state !== 'closed' && !noResponseLabelAdded) {
         unassign.unmark(type, issue)
       }
     }
   }
 
   async function markAndSweep (context) {
-    const assignees = await context.github.issues.getAssignees(context.repo())
-    const unassign = new Unassign(context.github, context.repo({assignees: assignees.data, logger: robot.log}))
+    const unassign = new Unassign(context.github, context.repo({logger: robot.log}))
     await unassign.markAndSweep('issues')
   }
 }
