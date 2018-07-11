@@ -19,12 +19,10 @@ module.exports = async robot => {
   robot.on('schedule.repository', markAndSweep)
 
   async function unmark (context) {
-    console.error('ERROR INSIDE UNMARK')
     if (!context.isBot) {
       const unassign = new Unassign(context.github, context.repo({logger: robot.log}))
       let issue = context.payload.issue || context.payload.pull_request
       const type = context.payload.issue ? 'issues' : 'pulls'
-      console.log('INSIDE INDEX UNMARK');
       // Some payloads don't include labels
       if (!issue.labels) {
         try {
