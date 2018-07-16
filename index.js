@@ -6,7 +6,7 @@ module.exports = async robot => {
   // Visit all repositories to mark and sweep no-response issues
   const scheduler = createScheduler(robot, {
     delay: !process.env.DISABLE_DELAY,
-    interval: 60 * 60 * 1000
+    interval: 60 * 5 * 1000
   });
 
   // Unmark no response issues if a user comments
