@@ -13,6 +13,7 @@ The unassign bot does exactly the same thing - it pings the assignee of each ass
 The bot can easily be configured by setting the following environment variables locally or on a server:  
 ```
 PERFORM=true  
+CHECKING_INTERVAL=60 // in minutes  
 DAYS_UNTIL_NO_RESPONSE=7  
 DAYS_UNTIL_UNASSIGN=10  
 ```
